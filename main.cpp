@@ -73,6 +73,11 @@ int main()
 			health = SUB_H;
 		}
 
+		if (count > 0)
+		{
+			cin.ignore();
+		}
+
 		getline(cin, name);
 		player[count].setName(name);
 		player[count].setHealth(health);
@@ -80,7 +85,7 @@ int main()
 
 		//set's the current ship's orinetation 
 		cout << "Do you want " << name << " to be oriented vertical or horizontal? Press v or h: ";
-		getline(cin, direction);
+		cin >> direction;
 
 		//validates direction input
 		while (direction != "v" && direction != "h")
@@ -88,6 +93,7 @@ int main()
 			cout << "Please enter a v or an h ";
 			cin >> direction;
 		}
+		
 
 		//instructs user to put the proper range of coordinates for their current ship
 		mygame.validateDirection(direction, row, col, health);

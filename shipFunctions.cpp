@@ -26,7 +26,7 @@ using namespace std;
 
 	void ship::setLocation(int row, int col)
 	{
-		if (direction == "horizontal")
+		if (direction == "h")
 		{
 			loc = new Location[health];
 
@@ -40,7 +40,7 @@ using namespace std;
 			orientation = row;
 		}
 		
-		if (direction == "vertical")
+		if (direction == "v")
 		{
 			loc = new Location[health];
 
