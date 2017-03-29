@@ -84,7 +84,7 @@ int main()
 		player[count].setSize();
 
 		//set's the current ship's orinetation 
-		cout << "Do you want " << name << " to be oriented vertical or horizontal? Press v or h: ";
+		cout << "Do you want " << player[count].getName() << " to be oriented vertical or horizontal? Press v or h: ";
 		cin >> direction;
 
 		//validates direction input
@@ -111,7 +111,7 @@ int main()
 	
 	//sets names for computer ships and health 
 	
-	mygame.setComp(computer);
+	/*mygame.setComp(computer);*/
 
 // ====================================================================================
 // BEGIN GAME LOOP

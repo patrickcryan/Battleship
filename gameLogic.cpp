@@ -260,10 +260,13 @@ void Game::computerTurn(ship user[4], char board[][10])
 }
 
 
-void Game::setComp(ship computer[4])
+void Game::setComp(ship computer[4], char board[][10])
 {
 
-	string direction = "v";
+	string direction = "";
+
+	direction = randCompDirection();
+	
 
 	computer[0].setDirection(direction);
 	computer[0].setName("Carrier");
@@ -271,11 +274,16 @@ void Game::setComp(ship computer[4])
 	computer[0].setSize();
 	computer[0].setLocation(0, 0);
 
+	direction = randCompDirection();
+	
+
 	computer[1].setDirection(direction);
 	computer[1].setName("Battleship");
 	computer[1].setHealth(4);
 	computer[1].setSize();
 	computer[1].setLocation(1, 3);
+
+	direction = randCompDirection();
 
 	computer[2].setDirection(direction);
 	computer[2].setName("Destroyer");
@@ -283,10 +291,73 @@ void Game::setComp(ship computer[4])
 	computer[2].setSize();
 	computer[2].setLocation(3, 6);
 
+	direction = randCompDirection();
+
 	computer[3].setDirection(direction);
 	computer[3].setName("Submarine");
 	computer[3].setHealth(2);
 	computer[3].setSize();
 	computer[3].setLocation(4, 8);
 
+}
+
+void Game::randCompLocation(ship comp[4], int count)
+{
+	int randX = 0;
+	int randY = 0;
+
+	srand(time(NULL));
+
+	randX = rand()% 11;
+
+	srand(time(NULL));
+
+	randY = rand() % 11;
+
+	if (comp[count].getDirection() == "v")
+	{
+
+		while (randY>(10 - comp[count].getHealth() + 1))
+		{
+			randY = rand() % 11;
+		}
+	}
+	if (comp[count].getDirection() == "h")
+	{
+		while (randX >(10 - comp[count].getHealth() + 1))
+		{
+			randX = rand() % 11;
+		}
+		while (randY> 10)
+		{
+			randY = rand() % 11;
+		}
+	}
+
+	comp[count].setLocation(randY, randX);
+
+}
+
+string Game::randCompDirection()
+{
+	string shipDirection;
+	int randomValue;
+
+	srand(time(NULL));
+
+	randomValue = rand() % 100;
+
+	randomValue = randomValue % 2;
+
+	if (randomValue == 0)
+	{
+		shipDirection = "v";
+	}
+	else
+	{
+		shipDirection = "h";
+	}
+
+
+	return shipDirection;
 }

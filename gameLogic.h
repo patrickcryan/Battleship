@@ -17,5 +17,7 @@ struct Game
 	void printBoard(char board[][10]);
 	void setBoard(ship user[4], char board[][10], int n);
 	void setDefault(char board[][10], bool game);
-	void setComp(ship user[4]);
+	void setComp(ship user[4], char board[][10]);
+	void randCompLocation(ship comp[4], int count);
+	string randCompDirection();
 };
