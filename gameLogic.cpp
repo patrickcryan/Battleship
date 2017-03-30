@@ -349,7 +349,7 @@ string Game::randCompDirection()
 
 	randomValue = randomValue % 2;
 
-	if (randomValue == 0)
+	if(randomValue == 0)
 	{
 		shipDirection = "v";
 	}
