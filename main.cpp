@@ -7,7 +7,7 @@
 #include <ctime>
 using namespace std;
 
-//declare constant ship sizes 
+//ship sizes 
 const int CARRIER_H = 5;
 const int BATTLESHIP_H = 4;
 const int DESTROYER_H = 3;
@@ -20,7 +20,7 @@ const int SUB_H = 2;
 
 int main()
 {
-	//declares variables, objects, and containers 
+
 	bool win = false;
 	bool game = false;
 	string name;
@@ -37,6 +37,10 @@ int main()
 	mygame.setDefault(p_board, game);
 	mygame.setDefault(c_board, game);
 	mygame.setDefault(g_board, game);
+
+	//used to test computer is properly placing its ships 
+	/*mygame.setComp(computer, c_board);
+	mygame.printBoard(c_board, player, computer);*/
 
 	game = true;
 	
@@ -105,13 +109,13 @@ int main()
 		//prints the current board
 
 		mygame.setBoard(player, p_board, count);
-		mygame.printBoard(p_board);
+		mygame.printBoard(p_board, player, computer);
 
 	} while (count != 4);
 	
 	//sets names for computer ships and health 
-	
-	/*mygame.setComp(computer);*/
+	mygame.setComp(computer, c_board);
+	mygame.printBoard(p_board, player, computer);
 
 // ====================================================================================
 // BEGIN GAME LOOP
@@ -119,7 +123,7 @@ int main()
 	while (win != true)
 	{
 		//prints current state of the board as seen by the player
-		mygame.printBoard(g_board);
+		mygame.printBoard(g_board, player, computer);
 
 		cout << endl;
 

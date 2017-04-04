@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <ctime>
 
+
 void Game::userTurn(ship comp[4], char board[][10])
 {
 	bool hit = false;
@@ -46,6 +47,12 @@ void Game::userTurn(ship comp[4], char board[][10])
 					cout << "The computer's " << comp[i].getName() << " is destroyed!" << endl;
 					comp[i].setDeath();
 				}
+
+				Location temp;
+				temp.x = col;
+				temp.y = row;
+
+				playerAttempts.push_front(temp);
 			}
 			else
 			{
@@ -56,6 +63,11 @@ void Game::userTurn(ship comp[4], char board[][10])
 
 	if (hit != true)
 	{
+		Location temp;
+		temp.x = col;
+		temp.y = row;
+
+		playerAttempts.push_front(temp);
 		cout << "Miss" << endl;
 		board[row][col] = 'O';
 	}
@@ -96,9 +108,10 @@ void Game::setBoard(ship user[4], char board[][10], int n)
 }
 
 
-void Game::printBoard(char board[][10])
+void Game::printBoard(char board[][10], ship user[4], ship comp[4])
 {
-
+	int compShipCount = 0;
+	int playerShipCount = 0;
 	int row = 10;
 	for (int j = 9; j >= 0; j--)
 	{
@@ -108,6 +121,55 @@ void Game::printBoard(char board[][10])
 		{
 			cout << left << setw(3) << board[j][k];
 		}
+		if (row == 9)
+		{
+			cout << "Computer's Health"; 
+			
+		}
+		if (row == 8 && comp[compShipCount].isAlive() == true)
+		{
+			cout << "Carrier: " << comp[compShipCount].getHealth();
+			compShipCount++;
+		}
+		else if (row == 7 && comp[compShipCount].isAlive() == true)
+		{
+			cout << "Battleship: " << comp[compShipCount].getHealth();
+			compShipCount++;
+		}
+		else if (row == 6 && comp[compShipCount].isAlive() == true)
+		{
+			cout << "Destroyer: " << comp[compShipCount].getHealth();
+			compShipCount++;
+		}
+		else if (row == 5 && comp[compShipCount].isAlive() == true)
+		{
+			cout << "Submarine: " << comp[compShipCount].getHealth();
+			
+		}
+		else if (row == 4)
+		{
+			
+		}
+		else if (row == 3)
+		{
+			cout << "Your Health";
+		}
+		else if (row == 2)
+		{
+			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+			playerShipCount++;
+		}
+		else if (row == 1)
+		{
+			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+			playerShipCount++;
+		}
+		else if (row == 0)
+		{
+			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+			playerShipCount++;
+		}
+		
 		cout << endl;
 	}
 
@@ -117,6 +179,8 @@ void Game::printBoard(char board[][10])
 	{
 		cout << left << setw(3) << i;
 	}
+	cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+	
 
 	cout << endl;
 	cout << endl;
@@ -262,94 +326,151 @@ void Game::computerTurn(ship user[4], char board[][10])
 
 void Game::setComp(ship computer[4], char board[][10])
 {
+	int compShipCount = 0;
 
-	string direction = "";
+	computer[compShipCount].setDirection(randCompDirection());
+	computer[compShipCount].setName("Carrier");
+	computer[compShipCount].setHealth(5);
+	computer[compShipCount].setSize();
+	randCompLocation(computer, compShipCount);
+	compShipCount++;
+	setBoard(computer, board, compShipCount);
+	_sleep(100);
 
-	direction = randCompDirection();
-	
+	computer[compShipCount].setDirection(randCompDirection());
+	computer[compShipCount].setName("Battleship");
+	computer[compShipCount].setHealth(4);
+	computer[compShipCount].setSize();
+	randCompLocation(computer, compShipCount);
+	compShipCount++;
+	setBoard(computer, board, compShipCount);
+	_sleep(100);
 
-	computer[0].setDirection(direction);
-	computer[0].setName("Carrier");
-	computer[0].setHealth(5);
-	computer[0].setSize();
-	computer[0].setLocation(0, 0);
 
-	direction = randCompDirection();
-	
-
-	computer[1].setDirection(direction);
-	computer[1].setName("Battleship");
-	computer[1].setHealth(4);
-	computer[1].setSize();
-	computer[1].setLocation(1, 3);
-
-	direction = randCompDirection();
-
-	computer[2].setDirection(direction);
+	computer[2].setDirection(randCompDirection());
 	computer[2].setName("Destroyer");
 	computer[2].setHealth(3);
 	computer[2].setSize();
-	computer[2].setLocation(3, 6);
+	randCompLocation(computer, compShipCount);
+	compShipCount++;
+	setBoard(computer, board, compShipCount);
+	_sleep(100);
 
-	direction = randCompDirection();
 
-	computer[3].setDirection(direction);
+
+	computer[3].setDirection(randCompDirection());
 	computer[3].setName("Submarine");
 	computer[3].setHealth(2);
 	computer[3].setSize();
-	computer[3].setLocation(4, 8);
+	randCompLocation(computer, compShipCount);
+	compShipCount++;
+	setBoard(computer, board, compShipCount);
+
 
 }
 
 void Game::randCompLocation(ship comp[4], int count)
 {
-	int randX = 0;
-	int randY = 0;
+	int currentShip = 0;
+	currentShip = count;
+	bool valid = true;
 
-	srand(time(NULL));
+	int randY;
+	int randX;
 
-	randX = rand()% 11;
+	clock_t time;
 
-	srand(time(NULL));
+	int maxY = (10 - comp[count].getHealth() + 1);
 
-	randY = rand() % 11;
+	time = clock();
 
-	if (comp[count].getDirection() == "v")
+	srand(time);
+	randY = rand() % maxY;
+
+
+	int maxX = (10 - comp[count].getHealth() + 1);
+
+	randX = rand() % maxX;
+
+
+	if (comp[currentShip].getDirection() == "h")
 	{
-
-		while (randY>(10 - comp[count].getHealth() + 1))
+		for (int i = 0; i < count; i++)
 		{
-			randY = rand() % 11;
+
+			for (int j = 0; j < comp[i].getSize(); j++)
+			{
+				if (comp[i].loc[j].x == randX && comp[i].loc[j].y == randY)
+				{
+					valid = false;
+
+				}
+				if (valid == false)
+				{
+					i = 0;
+					j = 0;
+
+					randY = rand() % 11;
+					maxX = (10 - comp[count].getHealth() + 1);
+					randX = rand() % maxX;
+					
+					valid = true;
+				}
+			}
 		}
 	}
-	if (comp[count].getDirection() == "h")
+
+	if (comp[currentShip].getDirection() == "v")
 	{
-		while (randX >(10 - comp[count].getHealth() + 1))
+		for (int i = 0; i < count; i++)
 		{
-			randX = rand() % 11;
-		}
-		while (randY> 10)
-		{
-			randY = rand() % 11;
+			for (int j = 0; j < comp[i].getSize(); j++)
+			{
+				if (comp[i].loc[j].x == randX && comp[i].loc[j].y == randY)
+				{
+					valid = false;
+
+				}
+				if (valid == false)
+				{
+					i = 0;
+					j = 0;
+
+					maxY = (10 - comp[count].getHealth() + 1);
+					randX = rand() % 11;
+
+					
+
+					valid == true;
+				}
+
+			}
 		}
 	}
+
 
 	comp[count].setLocation(randY, randX);
+	cout << "Computer's " << comp[count].getName() << " position's is set" << endl;
 
 }
+
 
 string Game::randCompDirection()
 {
 	string shipDirection;
 	int randomValue;
 
+	
 	srand(time(NULL));
+
+	
 
 	randomValue = rand() % 100;
 
 	randomValue = randomValue % 2;
 
 	if(randomValue == 0)
+
 	{
 		shipDirection = "v";
 	}
@@ -358,6 +479,34 @@ string Game::randCompDirection()
 		shipDirection = "h";
 	}
 
-
 	return shipDirection;
 }
+
+//int Game::randCompX()
+//{
+//	//_sleep(50);
+//
+//	clock_t time;
+//
+//	time = clock();
+//
+//	srand(time);
+//	int randX = rand() % 11;
+//	cout << randX;
+//
+//	return  randX;
+//}
+//
+//int Game::randCompY()
+//{
+//	//_sleep(50);
+//	clock_t time;
+//
+//	time = clock();
+//
+//	srand(time);
+//	int randY = rand() % 11;
+//	cout << randY;
+//
+//	return  randY;
+//}

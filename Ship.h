@@ -22,19 +22,20 @@ private:
 	int orientation;
 
 public:
-	void setName(string g_name);
+	void setName(string);
 	string getName();
-	void setLocation(int row, int col);
-	void setHealth(const int u_health);
+	void setLocation(int, int);
+	void setHealth(const int);
 	void reduceHealth();
 	int getHealth();
 	bool isAlive();
 	void setDeath();
-	void setDirection(string loc);
+	void setDirection(string);
 	string getDirection();
 	void setSize();
 	int getSize();
 	int getOrientation();
+	void setAttempts(int, int);
 	Location * loc;
 	
 

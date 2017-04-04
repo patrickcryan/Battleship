@@ -24,6 +24,11 @@ using namespace std;
 		return name;
 	}
 
+	void ship::setAttempts(int row, int col)
+	{
+		
+	}
+
 	void ship::setLocation(int row, int col)
 	{
 		if (direction == "h")
