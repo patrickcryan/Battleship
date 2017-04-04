@@ -76,7 +76,6 @@ void Game::userTurn(ship comp[4], char board[][10])
 //checks game state after player move
 bool Game::checkWin(ship user[4])
 {
-	bool win = false;
 	int count_wins = 0;
 	for (int i = 0; i < 4; i++)
 	{
@@ -85,12 +84,12 @@ bool Game::checkWin(ship user[4])
 			count_wins++;
 			if (count_wins == 4)
 			{
-				win = true;
+				return true;
 			}
 		}
 	}
 
-	return win;
+	return false;
 }
 
 void Game::setBoard(ship user[4], char board[][10], int n)
@@ -287,13 +286,10 @@ void Game::validateDirection(string direction, int & row, int & col, const int h
 
 void Game::computerTurn(ship user[4], char board[][10])
 {
-	int row, col;
 	bool hit = false;
 
-	srand(time(0));
-
-	row = rand() % 10;
-	col = rand() % 10;
+	int row = rand() % 10;
+	int col = rand() % 10;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -371,29 +367,17 @@ void Game::setComp(ship computer[4], char board[][10])
 
 void Game::randCompLocation(ship comp[4], int count)
 {
-	int currentShip = 0;
-	currentShip = count;
 	bool valid = true;
 
-	int randY;
-	int randX;
-
-	clock_t time;
-
 	int maxY = (10 - comp[count].getHealth() + 1);
-
-	time = clock();
-
-	srand(time);
-	randY = rand() % maxY;
+	int randY = rand() % maxY;
 
 
 	int maxX = (10 - comp[count].getHealth() + 1);
+	int randX = rand() % maxX;
 
-	randX = rand() % maxX;
 
-
-	if (comp[currentShip].getDirection() == "h")
+	if (comp[count].getDirection() == "h")
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -420,7 +404,7 @@ void Game::randCompLocation(ship comp[4], int count)
 		}
 	}
 
-	if (comp[currentShip].getDirection() == "v")
+	if (comp[count].getDirection() == "v")
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -456,57 +440,18 @@ void Game::randCompLocation(ship comp[4], int count)
 
 
 string Game::randCompDirection()
-{
-	string shipDirection;
-	int randomValue;
+{	
+	srand(time(NULL));	
+	int randomValue = rand() % 100;
 
-	
-	srand(time(NULL));
 
-	
-
-	randomValue = rand() % 100;
-
-	randomValue = randomValue % 2;
-
-	if(randomValue == 0)
+	if(randomValue % 2 == 0)
 
 	{
-		shipDirection = "v";
+		return "v";
 	}
 	else
 	{
-		shipDirection = "h";
+		return "h";
 	}
-
-	return shipDirection;
 }
-
-//int Game::randCompX()
-//{
-//	//_sleep(50);
-//
-//	clock_t time;
-//
-//	time = clock();
-//
-//	srand(time);
-//	int randX = rand() % 11;
-//	cout << randX;
-//
-//	return  randX;
-//}
-//
-//int Game::randCompY()
-//{
-//	//_sleep(50);
-//	clock_t time;
-//
-//	time = clock();
-//
-//	srand(time);
-//	int randY = rand() % 11;
-//	cout << randY;
-//
-//	return  randY;
-//}

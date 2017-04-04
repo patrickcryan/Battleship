@@ -1,10 +1,8 @@
 #include <iostream>
 #include <string>
-#include <ctime>
 #include "Ship.h"
 #include "gameLogic.h"
 #include <iomanip>
-#include <ctime>
 using namespace std;
 
 //ship sizes 
@@ -17,7 +15,6 @@ const int SUB_H = 2;
 // =======================================================================================
 // MAIN
 // =======================================================================================
-
 int main()
 {
 
@@ -130,7 +127,7 @@ int main()
 		//user's turn and checks game state after the player move
 		mygame.userTurn(computer, g_board);
 		win = mygame.checkWin(computer);
-		if (win)
+		if(win)
 		{
 			cout << "Congrats! You have won the game!" << endl;
 			return 0;
@@ -145,16 +142,10 @@ int main()
 			return 0;
 		}
 	}
-
 // =====================================================================================
 // END GAME LOOP
 // =====================================================================================
-
-	//terminates the program
-	system("PAUSE");
-	return 0;
 }
-
 // ====================================================================================
 // ====================================================================================
 // END MAIN
