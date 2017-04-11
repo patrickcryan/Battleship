@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
 #include "Ship.h"
-using namespace std;
 
 
 	void ship::setName(string g_name)
@@ -31,7 +28,7 @@ using namespace std;
 
 	void ship::setLocation(int row, int col)
 	{
-		if (direction == "h")
+		if (direction == 'h')
 		{
 			loc = new Location[health];
 
@@ -45,7 +42,7 @@ using namespace std;
 			orientation = row;
 		}
 		
-		if (direction == "v")
+		if (direction == 'v')
 		{
 			loc = new Location[health];
 
@@ -96,12 +93,12 @@ using namespace std;
 		alive = false;
 	}
 
-	void ship::setDirection(string loc)
+	void ship::setDirection(char loc)
 	{
 		direction = loc;
 	}
 
-	string ship::getDirection()
+	char ship::getDirection()
 	{
 		return direction;
 	}

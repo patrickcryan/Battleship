@@ -18,7 +18,7 @@ private:
 	int size;
 	int health;
 	bool alive = true;
-	string direction;
+	char direction;
 	int orientation;
 
 public:
@@ -30,8 +30,8 @@ public:
 	int getHealth();
 	bool isAlive();
 	void setDeath();
-	void setDirection(string);
-	string getDirection();
+	void setDirection(char);
+	char getDirection();
 	void setSize();
 	int getSize();
 	int getOrientation();

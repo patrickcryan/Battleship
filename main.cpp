@@ -3,6 +3,7 @@
 #include "Ship.h"
 #include "gameLogic.h"
 #include <iomanip>
+#include <cstring>
 using namespace std;
 
 //ship sizes 
@@ -45,10 +46,12 @@ int main()
 	cout << "**********Welcome to Battleship!**********" << endl;
 
 	int count = 0;
-	string direction;
+	char direction;
 	int row = 0;
 	int col = 0;
 	int health = 0;
+	bool isSetUpComplete = false;
+	int setUpCount = 0;
 
 	do
 	{
@@ -88,9 +91,16 @@ int main()
 		cout << "Do you want " << player[count].getName() << " to be oriented vertical or horizontal? Press v or h: ";
 		cin >> direction;
 
+		direction = tolower(direction);
+		
+		//fix!!!!!!!!!!!!!!!!!!!!!
 		//validates direction input
-		while (direction != "v" && direction != "h")
+		while ((direction != 'v' && direction != 'h') || cin.fail())
 		{
+			if (cin.fail())
+			{
+				cin.clear();
+			}
 			cout << "Please enter a v or an h ";
 			cin >> direction;
 		}
@@ -106,13 +116,16 @@ int main()
 		//prints the current board
 
 		mygame.setBoard(player, p_board, count);
-		mygame.printBoard(p_board, player, computer);
+		mygame.printBoard(p_board, player, computer, isSetUpComplete, setUpCount);
+		setUpCount++;
 
 	} while (count != 4);
 	
+
 	//sets names for computer ships and health 
 	mygame.setComp(computer, c_board);
-	mygame.printBoard(p_board, player, computer);
+	isSetUpComplete = true;
+	//mygame.printBoard(p_board, player, computer, isSetUpComplete, setUpCount);
 
 // ====================================================================================
 // BEGIN GAME LOOP
@@ -120,7 +133,9 @@ int main()
 	while (win != true)
 	{
 		//prints current state of the board as seen by the player
-		mygame.printBoard(g_board, player, computer);
+		//this top one is to test
+		mygame.printBoard(c_board, player, computer, isSetUpComplete, setUpCount);
+		mygame.printBoard(g_board, player, computer, isSetUpComplete, setUpCount);
 
 		cout << endl;
 
@@ -138,7 +153,8 @@ int main()
 		
 		if (win)
 		{
-			cout << "YOU DIED" << endl;
+			cout << "Computer has defeated you" << endl;
+			cout << "GAME OVER" << endl;
 			return 0;
 		}
 	}

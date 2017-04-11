@@ -1,16 +1,15 @@
-#include <iostream>
-#include <string>
-#include <ctime>
 #include "Ship.h"
 #include "gameLogic.h"
-#include <iomanip>
-#include <ctime>
+#include <iostream>
+
+
 
 
 void Game::userTurn(ship comp[4], char board[][10])
 {
 	bool hit = false;
 	bool new_turn = false;
+	bool validShot = true;
 	int row, col;
 	cout << "Enter an x and y coordinate: ";
 	cin >> col >> row;
@@ -18,21 +17,35 @@ void Game::userTurn(ship comp[4], char board[][10])
 	row--;
 	col--;
 
+	for (list<Location>::iterator i = playerAttempts.begin(); i != playerAttempts.end(); i++)
+	{
+		if (row == i->y && col == i->x)
+		{
+			validShot = false;
+		}
+		while (validShot == false)
+		{
+			i = playerAttempts.begin();
+			cout << "You already tried this coordinate, please try agian: ";
+			cin >> col >> row;
+			row--;
+			col--;
+			validShot = true;
+			for (list<Location>::iterator i = playerAttempts.begin(); i != playerAttempts.end(); i++)
+			{
+				if (row == i->y && col == i->x)
+				{
+					validShot = false;
+				}
+			}
+		}
+	}
+
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < comp[i].getSize(); j++)
 		{
-			if (comp[i].loc[j].x == col && comp[i].loc[j].y == row && comp[i].isAlive() != true)
-			{
-				cout << "The computer's " << comp[i].getName() << " is already destroyed, enter a different set of corrdinates" << endl;
-				new_turn = true;
-
-				if (new_turn == true)
-				{
-					userTurn(comp, board);
-				}
-			}
-			else if (comp[i].loc[j].x == col && comp[i].loc[j].y == row && comp[i].isAlive() == true)
+			if (comp[i].loc[j].x == col && comp[i].loc[j].y == row && comp[i].isAlive() == true)
 			{
 				comp[i].reduceHealth();
 				board[row][col] = 'x';
@@ -107,7 +120,7 @@ void Game::setBoard(ship user[4], char board[][10], int n)
 }
 
 
-void Game::printBoard(char board[][10], ship user[4], ship comp[4])
+void Game::printBoard(char board[][10], ship user[4], ship comp[4], bool setup, int shipCount)
 {
 	int compShipCount = 0;
 	int playerShipCount = 0;
@@ -120,32 +133,48 @@ void Game::printBoard(char board[][10], ship user[4], ship comp[4])
 		{
 			cout << left << setw(3) << board[j][k];
 		}
-		if (row == 9)
+
+		if (setup == true && row >= 5)
 		{
-			cout << "Computer's Health"; 
-			
+			if (row == 9)
+			{
+				cout << "Computer's Health";
+
+			}
+			if (row == 8)
+			{
+				if (comp[compShipCount].isAlive() == true)
+				{
+					cout << "Carrier: " << comp[compShipCount].getHealth();
+				}
+				compShipCount++;
+				
+			}
+			else if (row == 7)
+			{
+				if (comp[compShipCount].isAlive() == true)
+				{
+					cout << "Battleship: " << comp[compShipCount].getHealth();
+				}
+				compShipCount++;
+			}
+			else if (row == 6)
+			{
+				if (comp[compShipCount].isAlive() == true)
+				{
+					cout << "Destroyer: " << comp[compShipCount].getHealth();
+				}
+				compShipCount++;
+			}
+			else if (row == 5)
+			{
+				if (comp[compShipCount].isAlive() == true)
+				{
+					cout << "Submarine: " << comp[compShipCount].getHealth();
+				}
+			}
 		}
-		if (row == 8 && comp[compShipCount].isAlive() == true)
-		{
-			cout << "Carrier: " << comp[compShipCount].getHealth();
-			compShipCount++;
-		}
-		else if (row == 7 && comp[compShipCount].isAlive() == true)
-		{
-			cout << "Battleship: " << comp[compShipCount].getHealth();
-			compShipCount++;
-		}
-		else if (row == 6 && comp[compShipCount].isAlive() == true)
-		{
-			cout << "Destroyer: " << comp[compShipCount].getHealth();
-			compShipCount++;
-		}
-		else if (row == 5 && comp[compShipCount].isAlive() == true)
-		{
-			cout << "Submarine: " << comp[compShipCount].getHealth();
-			
-		}
-		else if (row == 4)
+		if (row == 4)
 		{
 			
 		}
@@ -158,12 +187,12 @@ void Game::printBoard(char board[][10], ship user[4], ship comp[4])
 			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
 			playerShipCount++;
 		}
-		else if (row == 1)
+		else if (row == 1 && shipCount >= 1)
 		{
 			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
 			playerShipCount++;
 		}
-		else if (row == 0)
+		else if (row == 0 && shipCount >= 2)
 		{
 			cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
 			playerShipCount++;
@@ -178,21 +207,24 @@ void Game::printBoard(char board[][10], ship user[4], ship comp[4])
 	{
 		cout << left << setw(3) << i;
 	}
-	cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+	if (shipCount >= 3)
+	{
+		cout << user[playerShipCount].getName() << ": " << user[playerShipCount].getHealth();
+	}
 	
 
 	cout << endl;
 	cout << endl;
 }
 
-void Game::validatePostion(string direction, int & row, int & col, const int health, ship user[4], int n)
+void Game::validatePostion(char direction, int & row, int & col, const int health, ship user[4], int n)
 {
 	bool valid = true;
 	for (int i = 0; i <= n; i++)
 	{
 		if (i != n)
 		{
-			if (user[i].getDirection() == "h")
+			if (user[i].getDirection() == 'h"')
 			{
 				for (int j = 0; j < user[i].getSize(); j++)
 				{
@@ -204,7 +236,7 @@ void Game::validatePostion(string direction, int & row, int & col, const int hea
 					}
 				}
 			}
-			if (user[i].getDirection() == "v")
+			if (user[i].getDirection() == 'v')
 			{
 				for (int j = 0; j <= user[i].getSize(); j++)
 				{
@@ -244,9 +276,9 @@ void Game::setDefault(char board[][10], bool game)
 	}
 }
 
-void Game::validateDirection(string direction, int & row, int & col, const int health)
+void Game::validateDirection(char direction, int & row, int & col, const int health)
 {
-	if (direction == "v")
+	if (direction == 'v')
 	{
 		cout << "Enter an x coordinate (1-10) and a y coordinate(1-" << 10 - health + 1 << ")" << endl;
 		cin >> col >> row;
@@ -261,7 +293,7 @@ void Game::validateDirection(string direction, int & row, int & col, const int h
 			cin >> row;
 		}
 	}
-	if (direction == "h")
+	if (direction == 'h')
 	{
 		cout << "Enter an x coordinate (1-" << 10 - health + 1 << ") and a y coordinate(1-10)" << endl;
 		cin >> col >> row;
@@ -287,35 +319,81 @@ void Game::validateDirection(string direction, int & row, int & col, const int h
 void Game::computerTurn(ship user[4], char board[][10])
 {
 	bool hit = false;
+	bool validShot = true;
 
-	int row = rand() % 10;
-	int col = rand() % 10;
+	int row = 0;
+	int col = 0;
 
-	for (int i = 0; i < 4; i++)
+	if (seekMode == true)
 	{
-		for (int j = 0; j < user[i].getSize(); j++)
-		{
-			if (user[i].loc[j].x == col && user[i].loc[j].y == row && user[i].isAlive() == true)
-			{
-				user[i].reduceHealth();
-				board[row][col] = 'x';
-				hit = true;
+		row = rand() % 10;
+		col = rand() % 10;
 
-				if (user[i].getHealth() != 0)
+
+		for (list<Location>::iterator i = compAttempts.begin(); i != compAttempts.end(); i++)
+		{
+			if (row == i->y && col == i->x)
+			{
+				validShot = false;
+			}
+			while (validShot == false)
+			{
+				i = compAttempts.begin();
+
+				row = rand() % 10;
+				col = rand() % 10;
+
+				validShot = true;
+				for (list<Location>::iterator i = compAttempts.begin(); i != compAttempts.end(); i++)
 				{
-					cout << "Hit! Your " << user[i].getName() << "'s health is now: " << user[i].getHealth() << endl;
-				}
-				if (user[i].getHealth() == 0 && user[i].isAlive() == true)
-				{
-					cout << user[i].getName() << " is destroyed!" << endl;
-					user[i].setDeath();
+					if (row == i->y && col == i->x)
+					{
+						validShot = false;
+					}
 				}
 			}
 		}
 	}
-	if (hit != true)
+	else if (huntMode == true)
 	{
-		cout << "Computer has missed" << endl;
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < user[i].getSize(); j++)
+			{
+				if (user[i].loc[j].x == col && user[i].loc[j].y == row && user[i].isAlive() == true)
+				{
+					user[i].reduceHealth();
+					board[row][col] = 'x';
+					hit = true;
+
+					Location temp;
+					temp.x = col;
+					temp.y = row;
+					compAttempts.push_front(temp);
+
+					if (user[i].getHealth() != 0)
+					{
+						cout << "Hit! Your " << user[i].getName() << "'s health is now: " << user[i].getHealth() << endl;
+					}
+					if (user[i].getHealth() == 0 && user[i].isAlive() == true)
+					{
+						cout << user[i].getName() << " is destroyed!" << endl;
+						user[i].setDeath();
+						seekMode = true;
+						huntMode = false;
+					}
+				}
+			}
+		}
+		if (hit != true)
+		{
+			cout << "Computer has missed" << endl;
+			Location temp;
+			temp.x = col;
+			temp.y = row;
+			compAttempts.push_front(temp);
+		}
 	}
 }
 
@@ -377,7 +455,7 @@ void Game::randCompLocation(ship comp[4], int count)
 	int randX = rand() % maxX;
 
 
-	if (comp[count].getDirection() == "h")
+	if (comp[count].getDirection() == 'h')
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -404,7 +482,7 @@ void Game::randCompLocation(ship comp[4], int count)
 		}
 	}
 
-	if (comp[count].getDirection() == "v")
+	if (comp[count].getDirection() == 'v')
 	{
 		for (int i = 0; i < count; i++)
 		{
@@ -439,7 +517,7 @@ void Game::randCompLocation(ship comp[4], int count)
 }
 
 
-string Game::randCompDirection()
+char Game::randCompDirection()
 {	
 	srand(time(NULL));	
 	int randomValue = rand() % 100;
@@ -448,10 +526,10 @@ string Game::randCompDirection()
 	if(randomValue % 2 == 0)
 
 	{
-		return "v";
+		return 'v';
 	}
 	else
 	{
-		return "h";
+		return 'h';
 	}
 }
